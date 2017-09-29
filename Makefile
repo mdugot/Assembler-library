@@ -8,13 +8,17 @@ SRC_NAME= ft_puts.s
 OBJ_NAME= $(SRC_NAME:.s=.o)
 OBJ_PATH= ./obj/
 SRC_PATH= ./sources/
+DEFINE_LIBFT= 'LIB(x)=ft_ \#\# x'
+DEFINE_LIBC= 'LIB(x)=x'
 SRC= $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ= $(addprefix $(OBJ_PATH), $(OBJ_NAME))
 NAME=libfts.a
 
 CSRC= checker.c
-COBJ= $(CSRC:.c=.o)
-CHECKER=checker
+C_OBJ= $(addprefix c_, $(CSRC:.c=.o))
+FT_OBJ= $(addprefix ft_, $(CSRC:.c=.o))
+FT_CHECKER=ft_checker
+C_CHECKER=c_checker
 
 
 .PHONY: all
@@ -30,23 +34,34 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.s
 	@$(ASM) $(AFLAGS) $< -o $@
 	@printf "\033[2K[ \033[31mcompiling\033[0m ] $< \r"
 
-$(CHECKER): $(OBJ) $(COBJ)
-	$(LINKER) $(OBJ) $(COBJ) $(LFLAGS) -o $(CHECKER)
+.PHONY: checker
+checker: ft_checker c_checker
 
-%.o: %.c
-	@$(CC) -c -o $@ $<
+ft_checker: $(OBJ) $(FT_OBJ)
+	$(LINKER) $(OBJ) $(FT_OBJ) $(LFLAGS) -o $(FT_CHECKER)
+
+c_checker: $(OBJ) $(C_OBJ)
+	$(LINKER) $(OBJ) $(C_OBJ) $(LFLAGS) -o $(C_CHECKER)
+
+ft_%.o: %.c
+	$(CC) -D $(DEFINE_LIBFT) -c -o $@ $<
+
+c_%.o: %.c
+	$(CC) -D $(DEFINE_LIBC) -c -o $@ $<
 
 .PHONY: clean
 clean:
 	@printf "[ \033[36mdelete\033[0m ] objects from $(NAME)\n"
 	@rm -rf $(OBJ_PATH)
-	@rm -f $(COBJ)
+	@rm -f $(C_OBJ)
+	@rm -f $(FT_OBJ)
 
 .PHONY: fclean
 fclean: clean
 	@printf "[ \033[36mdelete\033[0m ] $(NAME)\n"
 	@rm -f $(NAME)
-	@rm -f $(CHECKER)
+	@rm -f $(C_CHECKER)
+	@rm -f $(FT_CHECKER)
 
 .PHONY: re
 re: fclean all
