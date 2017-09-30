@@ -5,7 +5,7 @@ LFLAGS= -macosx_version_min 10.8 -lSystem
 
 CC= gcc
 SRC_NAME= ft_puts.s ft_toupper.s ft_tolower.s ft_isalpha.s \
-          ft_isdigit.s ft_isalnum.s ft_isprint.s
+          ft_isdigit.s ft_isalnum.s ft_isprint.s ft_bzero.s
 OBJ_NAME= $(SRC_NAME:.s=.o)
 OBJ_PATH= ./obj/
 SRC_PATH= ./sources/

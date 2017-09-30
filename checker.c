@@ -1,8 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 
-#define PRINTF(x) printf(x); fflush(stdout)
+#define PRINTF(x...) printf(x); fflush(stdout)
 #define R(x) r = x; printf("=> %d\n", r); fflush(stdout)
+#define D(x, m, s) x; dump(m, s)
 
 int ft_puts(char *str);
 int ft_toupper(int c);
@@ -11,21 +14,17 @@ int ft_isalpha(int c);
 int ft_isdigit(int c);
 int ft_isalnum(int c);
 int ft_isprint(int c);
+void ft_bzero(void *s, size_t n);
 
-void dbg_int(int x)
+void dump(char *mem, size_t size)
 {
-	printf("=> %d\n", x);
+	size_t i;
+
+	PRINTF("dump %p :\n", mem);
+	for (i = 0; i < size; i++)
+		PRINTF("%#hhx\n", mem[i]);
 }
 
-void dbg_char(char c)
-{
-	printf("=> %c\n", c);
-}
-
-void dbg_str(char *str)
-{
-	printf("=> %s\n", str);
-}
 
 int main(void)
 {
@@ -37,6 +36,14 @@ int main(void)
 	PRINTF("//                              //\n");
 	PRINTF("//////////////////////////////////\n\n");
 
+	PRINTF(".............. bzero .............\n\n");
+	char mem[10];
+	memcpy(mem, "0123456789", 10);
+	D(LIB(bzero)(mem, 10), mem, 10);
+	memcpy(mem, "0123456789", 10);
+	D(LIB(bzero)(mem, 4), mem, 10);
+	memcpy(mem, "0123456789", 10);
+	D(LIB(bzero)(mem, 0), mem, 10);
 	PRINTF("............... puts .............\n\n");
 	char str[] = "this is a long test with a lot of words in it\n";
 	R(LIB(puts)(str));
