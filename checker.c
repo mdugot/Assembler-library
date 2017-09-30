@@ -5,6 +5,7 @@
 
 #define PRINTF(x...) printf(x); fflush(stdout)
 #define R(x) r = x; printf("=> %d\n", r); fflush(stdout)
+#define S(x) s = x; printf("=> %s\n", s); fflush(stdout)
 #define D(x, m, s) x; dump(m, s)
 
 int ft_puts(char *str);
@@ -15,6 +16,7 @@ int ft_isdigit(int c);
 int ft_isalnum(int c);
 int ft_isprint(int c);
 void ft_bzero(void *s, size_t n);
+char *ft_strcat(char *restrict s1, const char *restrict s2);
 
 void dump(char *mem, size_t size)
 {
@@ -29,6 +31,7 @@ void dump(char *mem, size_t size)
 int main(void)
 {
 	int r;
+	char *s;
 
 	PRINTF("//////////////////////////////////\n");
 	PRINTF("//                              //\n");
@@ -36,8 +39,19 @@ int main(void)
 	PRINTF("//                              //\n");
 	PRINTF("//////////////////////////////////\n\n");
 
+	PRINTF(".............. strcat ............\n\n");
+	char mem[100];
+	strcpy(mem, "premier ");
+	S(LIB(strcat)(mem, "test\n"));
+	strcpy(mem, "");
+	S(LIB(strcat)(mem, "second test\n"));
+	strcpy(mem, "troisieme test\n");
+	S(LIB(strcat)(mem, ""));
+	strcpy(mem, "quatrieme test");
+	S(LIB(strcat)(mem, "\n"));
+	strcpy(mem, "d");
+	S(LIB(strcat)(mem, "ernier test\n"));
 	PRINTF(".............. bzero .............\n\n");
-	char mem[10];
 	memcpy(mem, "0123456789", 10);
 	D(LIB(bzero)(mem, 10), mem, 10);
 	memcpy(mem, "0123456789", 10);
