@@ -4,7 +4,8 @@ LINKER= ld
 LFLAGS= -macosx_version_min 10.8 -lSystem
 
 CC= gcc
-SRC_NAME= ft_puts.s
+SRC_NAME= ft_puts.s ft_toupper.s ft_tolower.s ft_isalpha.s \
+          ft_isdigit.s ft_isalnum.s ft_isprint.s
 OBJ_NAME= $(SRC_NAME:.s=.o)
 OBJ_PATH= ./obj/
 SRC_PATH= ./sources/
@@ -31,7 +32,7 @@ $(NAME): $(OBJ)
 	
 $(OBJ_PATH)%.o: $(SRC_PATH)%.s
 	@mkdir $(OBJ_PATH) 2> /dev/null || echo "" > /dev/null
-	@$(ASM) $(AFLAGS) $< -o $@
+	$(ASM) $(AFLAGS) $< -o $@
 	@printf "\033[2K[ \033[31mcompiling\033[0m ] $< \r"
 
 .PHONY: checker
