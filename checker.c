@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,6 +6,7 @@
 
 #define PRINTF(x...) printf(x); fflush(stdout)
 #define R(x) r = x; printf("=> %d\n", r); fflush(stdout)
+#define L(x) l = x; printf("=> %zu\n", l); fflush(stdout)
 #define S(x) s = x; printf("=> %s\n", s); fflush(stdout)
 #define D(x, m, s) x; dump(m, s)
 
@@ -17,12 +19,16 @@ int ft_isalnum(int c);
 int ft_isprint(int c);
 void ft_bzero(void *s, size_t n);
 char *ft_strcat(char *restrict s1, const char *restrict s2);
+size_t ft_strlen(const char *s);
+void *ft_memset(void *b, int c, size_t len);
+void *ft_memcpy(void *dst, void *src, size_t n);
+char *ft_strdup(const char *s1);
 
 void dump(char *mem, size_t size)
 {
 	size_t i;
 
-	PRINTF("dump %p :\n", mem);
+	PRINTF("dump :\n");
 	for (i = 0; i < size; i++)
 		PRINTF("%#hhx\n", mem[i]);
 }
@@ -30,7 +36,9 @@ void dump(char *mem, size_t size)
 
 int main(void)
 {
+	char mem[100];
 	int r;
+	size_t l;
 	char *s;
 
 	PRINTF("//////////////////////////////////\n");
@@ -39,8 +47,35 @@ int main(void)
 	PRINTF("//                              //\n");
 	PRINTF("//////////////////////////////////\n\n");
 
+	PRINTF(".............. strdup ............\n\n");
+	S(LIB(strdup)("test\n"));
+	free(s);
+	S(LIB(strdup)("second test\n"));
+	free(s);
+	S(LIB(strdup)(""));
+	free(s);
+	PRINTF(".............. memcpy ............\n\n");
+	LIB(bzero(mem, 100));
+	D(LIB(memcpy)(mem, "qwertyuiopasdfghjk", 8), mem, 10);
+	D(LIB(memcpy)(mem, "1234567890", 4), mem, 10);
+	D(LIB(memcpy)(mem, "-=-=-=-=-=-=", 1), mem, 10);
+	D(LIB(memcpy)(mem, "@@@@", 0), mem, 10);
+//	D(LIB(memcpy)(mem, &mem[3], 5), mem, 10);
+//	D(LIB(memcpy)(&mem[3], mem, 5), mem, 10);
+	PRINTF(".............. memset ............\n\n");
+	LIB(bzero(mem, 100));
+	D(LIB(memset)(mem, '*', 8), mem, 10);
+	D(LIB(memset)(mem, ' ', 4), mem, 10);
+	D(LIB(memset)(mem, 'A', 1), mem, 10);
+	D(LIB(memset)(mem, '0', 0), mem, 10);
+	D(LIB(memset)(mem, (int)mem[3], 5), mem, 10);
+	D(LIB(memset)(&mem[3], (int)mem[3], 5), mem, 10);
+	PRINTF(".............. strlen ............\n\n");
+	L(LIB(strlen)("test"));
+	L(LIB(strlen)(""));
+	L(LIB(strlen)(" \b\t@#$%^&*sudgi867586\n\t"));
+
 	PRINTF(".............. strcat ............\n\n");
-	char mem[100];
 	strcpy(mem, "premier ");
 	S(LIB(strcat)(mem, "test\n"));
 	strcpy(mem, "");
@@ -52,11 +87,11 @@ int main(void)
 	strcpy(mem, "d");
 	S(LIB(strcat)(mem, "ernier test\n"));
 	PRINTF(".............. bzero .............\n\n");
-	memcpy(mem, "0123456789", 10);
+	LIB(memcpy)(mem, "0123456789", 10);
 	D(LIB(bzero)(mem, 10), mem, 10);
-	memcpy(mem, "0123456789", 10);
+	LIB(memcpy)(mem, "0123456789", 10);
 	D(LIB(bzero)(mem, 4), mem, 10);
-	memcpy(mem, "0123456789", 10);
+	LIB(memcpy)(mem, "0123456789", 10);
 	D(LIB(bzero)(mem, 0), mem, 10);
 	PRINTF("............... puts .............\n\n");
 	char str[] = "this is a long test with a lot of words in it\n";
