@@ -1,3 +1,5 @@
+#include <fcntl.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +11,7 @@
 #define L(x) l = x; printf("=> %zu\n", l); fflush(stdout)
 #define S(x) s = x; printf("=> %s\n", s); fflush(stdout)
 #define D(x, m, s) x; dump(m, s)
+#define CATSIZE 0x1000
 
 int ft_puts(char *str);
 int ft_toupper(int c);
@@ -23,6 +26,7 @@ size_t ft_strlen(const char *s);
 void *ft_memset(void *b, int c, size_t len);
 void *ft_memcpy(void *dst, void *src, size_t n);
 char *ft_strdup(const char *s1);
+void ft_cat(int fd);
 
 void dump(char *mem, size_t size)
 {
@@ -33,6 +37,19 @@ void dump(char *mem, size_t size)
 		PRINTF("%#hhx\n", mem[i]);
 }
 
+void cat(int fd)
+{
+	char buff[CATSIZE];
+	size_t len;
+
+	while ((len = read(fd, buff, CATSIZE)) != (size_t)-1)
+	{
+		write(1, buff, len);
+		if (len == 0)
+			break;
+	}
+}
+
 
 int main(void)
 {
@@ -40,12 +57,14 @@ int main(void)
 	int r;
 	size_t l;
 	char *s;
+	int fd;
 
 	PRINTF("//////////////////////////////////\n");
 	PRINTF("//                              //\n");
 	PRINTF("//       LIBFT ASM CHECKER      //\n");
 	PRINTF("//                              //\n");
 	PRINTF("//////////////////////////////////\n\n");
+
 
 	PRINTF(".............. strdup ............\n\n");
 	S(LIB(strdup)("test\n"));
@@ -232,5 +251,26 @@ int main(void)
 	R(LIB(isprint)(999));
 	R(LIB(isprint)(2000));
 	R(LIB(isprint)(123456));
+	PRINTF("..............  cat  .............\n\n");
+	fd = open("Makefile", O_RDONLY);
+	LIB(cat)(fd);
+	fd = open("auteur", O_RDONLY);
+	LIB(cat)(fd);
+	fd = open("auteur", O_WRONLY);
+	LIB(cat)(fd);
+	fd = open("nofile", O_RDONLY);
+	LIB(cat)(fd);
+	fd = open("noperm", O_RDONLY);
+	LIB(cat)(fd);
+	fd = open("empty", O_RDONLY);
+	LIB(cat)(fd);
+	LIB(cat)(-1);
+	LIB(cat)(21);
+	LIB(cat)(2000);
+//	LIB(cat)(1);
+//	LIB(cat)(2);
+//	LIB(cat)(0);
+//	fd = open("/dev/random", O_RDONLY);
+//	LIB(cat)(fd);
 	return 0;
 }
